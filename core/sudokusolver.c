@@ -5,11 +5,32 @@
 
 #define ALL_VALS_BIT_REP 511 // 2^9 - 1
 
+#define N_SUBGRIDS 9
+
+#define EMPTY_CELL 0
+
+typedef unsigned char cell_t;
+typedef cell_t grid_t[N_ROWS][N_COLS];
+
 typedef struct _cands_t {
-    int rows[9];
-    int cols[9];
-    int subgrids[9];
+    int rows[N_ROWS];
+    int cols[N_COLS];
+    int subgrids[N_SUBGRIDS];
 } cands_t;
+
+static void str_rep_to_grid(const char *grid_repr_in, grid_t grid)
+{
+    for (int i = 0; i < GRID_SIZE; ++i) {
+        grid[i / N_COLS][i % N_COLS] = grid_repr_in[i] - '0';
+    }
+}
+
+static void grid_to_str_rep(grid_t grid, char *grid_repr_out)
+{
+    for (int i = 0; i < GRID_SIZE; ++i)
+        grid_repr_out[i] = grid[i / N_COLS][i % N_COLS] + '0';
+    grid_repr_out[GRID_SIZE] = '\0';
+}
 
 static inline int calc_val_bit(int val)
 {
@@ -122,11 +143,18 @@ static int solve_backtrack(int row, int col, grid_t grid, cands_t *cands)
     }
 }
 
-int sudoku_solve(grid_t grid)
+int sudoku_solve(const char *grid_repr_in, char *grid_repr_out)
 {
+    grid_t grid;
     cands_t cands;
 
+    str_rep_to_grid(grid_repr_in, grid);
     candidates_init(grid, &cands);
     solve_fill_certain_cells(grid, &cands);
-    return solve_backtrack(0, 0, grid, &cands);
+    if (solve_backtrack(0, 0, grid, &cands)) {
+        grid_to_str_rep(grid, grid_repr_out);
+        return 1;
+    } else {
+        return 0;
+    }
 }

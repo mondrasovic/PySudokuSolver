@@ -1,14 +1,12 @@
 #ifndef SUDOKUSOLVER_H
 #define SUDOKUSOLVER_H
 
+#define GRID_SIZE 81
+#define GRID_REPR_SIZE 82
+
 #define N_ROWS 9
 #define N_COLS 9
 
-#define EMPTY_CELL 0
-
-typedef unsigned char cell_t;
-typedef cell_t grid_t[N_ROWS][N_COLS];
-
-extern int sudoku_solve(grid_t grid);
+extern int sudoku_solve(const char *grid_repr_in, char *grid_repr_out);
 
 #endif // SUDOKUSOLVER_H
